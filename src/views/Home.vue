@@ -1,81 +1,120 @@
 <script lang="ts">
 import RegionMap from '@/components/RegionMap.vue';
+import LineChart from '@/components/LineChart.vue';
 import PieChart from '@/components/PieChart.vue';
-import { Component, Vue } from 'vue-property-decorator';
-import todayData from '@/assets/data/covid-19-gr-2020-03-24.json';
+import {
+  Component, Prop, Vue
+} from 'vue-property-decorator';
 import PieData from '@/types/PieData';
 import DailyCoronaData from '@/types/DailyCoronaData';
 
 @Component({
   name: 'Home',
   components: {
-    RegionMap,
+    LineChart,
     PieChart,
+    RegionMap,
   },
 })
 export default class Home extends Vue {
-  data: DailyCoronaData; // eslint-disable-line
+  data?: DailyCoronaData; // eslint-disable-line
+  isLoading = true;
+
+  @Prop({
+    default: '2020-03-24',
+    type: String
+  })
+  private date!: string;
 
   constructor() {
     super();
-    this.data = todayData;
+  }
+
+  async created() {
+    this.loadData();
+  }
+
+  async loadData() {
+    try {
+      this.isLoading = true;
+      this.data = await import(
+        `@/assets/data/covid-19-gr-${this.date}.json`
+      );
+      console.log(this.data);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   get totalCases(): number {
-    return todayData.total;
+    return this.data?.total || 0;
   }
 
   get currentDeaths(): number {
-    return todayData.current_deaths;
+    return this.data?.current_deaths || 0;
   }
 
   get newConfirmed(): number {
-    return todayData.new_confirmed;
+    return this.data?.new_confirmed || 0;
   }
 
   get casesGroupedByAge(): PieData[] {
+    if (!this.data) {
+      return [];
+    }
+
     return [{
       name: '65+',
-      value: todayData['65_plus'],
+      value: this.data['65_plus'],
     }, {
       name: '40-64',
-      value: todayData['40-64'],
+      value: this.data['40-64'],
     }, {
       name: '18-39',
-      value: todayData['18-39'],
+      value: this.data['18-39'],
     }, {
       name: '0-17',
-      value: todayData['0-17'],
+      value: this.data['0-17'],
     }].reverse();
   }
 
   get casesGroupedByGender(): PieData[] {
+    if (!this.data) {
+      return [];
+    }
     return [{
       name: 'men',
-      value: +todayData['men'],
+      value: this.data['men'],
     }, {
       name: 'women',
-      value: +todayData['women'],
+      value: +this.data['women'],
     }];
   }
 
   get casesGroupedByHospitilization(): PieData[] {
+    if (!this.data) {
+      return [];
+    }
+
     return [{
       name: 'in_IC',
-      value: +todayData['in_IC'],
+      value: this.data['in_IC'],
     }, {
       name: 'currently_treating',
-      value: +todayData['currently_treating']
+      value: this.data['currently_treating']
     }, {
       name: 'recovered',
-      value: +todayData['recovered'],
+      value: this.data['recovered'],
     }];
   }
 }
 </script>
 
 <template>
-  <section class="home-view">
+  <section
+    v-if="!isLoading"
+    class="home-view"
+  >
     <div class="home-view__primary-row">
       <article class="home-view__card">
         <h2 class="home-view__card-title">
@@ -122,6 +161,9 @@ export default class Home extends Vue {
         :data="casesGroupedByHospitilization"
       />
     </div>
+    <div class="home-view__overview">
+      <LineChart></LineChart>
+    </div>
   </section>
 </template>
 
@@ -130,6 +172,16 @@ export default class Home extends Vue {
 @import '../scss/variables'
 
 .home-view
+  &__overview
+    border: 1px solid #DCDCDC
+    max-width: 15rem
+    padding: $space
+  &__pie-chart
+    border: 1px solid #DCDCDC
+    border-radius: 2px
+    flex: 1 1 0px
+    margin: $space
+    padding: $space
   &__pie-charts
     display: flex
     flex-direction: column
@@ -144,7 +196,7 @@ export default class Home extends Vue {
     background-color: $color-rainbow-green
     border: 1px solid green
     border-radius: 2px
-    flex-grow: 1
+    flex: 1 1 0px
     margin: $space
     padding: $space
   &__card-title

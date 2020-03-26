@@ -1,5 +1,7 @@
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import {
+  Component, Prop, Vue
+} from 'vue-property-decorator';
 import PieData from '@/types/PieData';
 import * as d3 from 'd3';
 
@@ -39,7 +41,7 @@ export default class PieChart extends Vue {
   mounted() {
     this.radius = Math.min(this.width, this.height) / 2 - this.margin
     const svg = d3.create('svg')
-      .attr("viewBox", `0 0 ${this.width} ${this.height}`);
+      .attr('viewBox', `0 0 ${this.width} ${this.height}`);
 
     const g = svg.append('g')
       .attr(
@@ -58,23 +60,23 @@ export default class PieChart extends Vue {
     const arcs = pie(this.data.map(data => data.value));
 
     const arc = d3.arc().innerRadius(100).outerRadius(this.radius);
-    g.selectAll("whatever")
+    g.selectAll('whatever')
       .data(arcs)
       .enter()
       .append('path')
-        .attr('d', d => arc({
-          innerRadius: this.margin,
-          outerRadius: this.radius,
-          startAngle: d.startAngle,
-          endAngle: d.endAngle,
-        }))
-        .attr('fill', d => {
-          const result =  color(`${d.value}`);
-          return `${result}`;
-        })
-        .attr('stroke', 'white')
-        .attr('stroke-width', '2px')
-        .attr('opacity', 0.7);
+      .attr('d', d => arc({
+        innerRadius: this.margin,
+        outerRadius: this.radius,
+        startAngle: d.startAngle,
+        endAngle: d.endAngle,
+      }))
+      .attr('fill', d => {
+        const result =  color(`${d.value}`);
+        return `${result}`;
+      })
+      .attr('stroke', 'white')
+      .attr('stroke-width', '2px')
+      .attr('opacity', 0.7);
 
     g.selectAll('whatever')
       .data(arcs)
@@ -84,7 +86,7 @@ export default class PieChart extends Vue {
         const name = this.data[d.index].name;
         return `${name}: ${d.value}`
       })
-      .attr("transform", d => {
+      .attr('transform', d => {
         const result = arc.centroid({
           innerRadius: this.margin,
           outerRadius: this.radius,
@@ -93,8 +95,8 @@ export default class PieChart extends Vue {
         });
         return `translate(${result})`;
       })
-      .style("text-anchor", "middle")
-      .style("font-size", "1rem");
+      .style('text-anchor', 'middle')
+      .style('font-size', '1rem');
 
     this.$el.append(svg.node() as Node);
   }

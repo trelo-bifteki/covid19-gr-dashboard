@@ -1,7 +1,11 @@
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import {
+  Component, Vue
+} from 'vue-property-decorator';
 import * as d3 from 'd3';
-import { GeoProjection, GeoPath } from 'd3';
+import {
+  GeoProjection, GeoPath
+} from 'd3';
 
 @Component
 export default class RegionMap extends Vue {
@@ -35,7 +39,9 @@ export default class RegionMap extends Vue {
   getScales() {
     const x = d3.scaleTime().range([0, 430]);
     const y = d3.scaleLinear().range([210, 0]);
-    return { x, y };
+    return {
+      x, y
+    };
   }
 
   calculatePath() {
