@@ -3,10 +3,13 @@ import RegionMap from '@/components/RegionMap.vue';
 import LineChart from '@/components/LineChart.vue';
 import PieChart from '@/components/PieChart.vue';
 import {
-  Component, Prop, Vue
+  Component, Prop, Vue, Watch
 } from 'vue-property-decorator';
 import PieData from '@/types/PieData';
 import DailyCoronaData from '@/types/DailyCoronaData';
+import {
+  Route
+} from 'vue-router';
 
 @Component({
   name: 'Home',
@@ -25,6 +28,16 @@ export default class Home extends Vue {
     type: String
   })
   private date!: string;
+
+  @Watch('$route')
+  private onRouteChange(current: Route, previous: Route) {
+    const currentDate = current.params.date;
+    const previousDate = previous.params.date;
+
+    if (currentDate !== previousDate) {
+      this.loadData();
+    }
+  }
 
   constructor() {
     super();
