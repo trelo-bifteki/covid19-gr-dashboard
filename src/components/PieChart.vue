@@ -94,7 +94,7 @@ export default class PieChart extends Vue {
         return `translate(${result})`;
       })
       .style("text-anchor", "middle")
-      .style("font-size", "11px");
+      .style("font-size", "1rem");
 
     this.$el.append(svg.node() as Node);
   }
