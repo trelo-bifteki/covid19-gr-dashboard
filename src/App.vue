@@ -9,8 +9,21 @@
 </template>
 
 <style lang="scss">
+@import 'reset-css';
+@import 'scss/variables';
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  background-color: $color-white;
+  color: $color-gray-darkest;
+  font-family: $font-family-base;
+  font-size: 100%;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

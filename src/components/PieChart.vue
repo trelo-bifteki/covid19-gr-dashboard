@@ -39,8 +39,6 @@ export default class PieChart extends Vue {
   mounted() {
     this.radius = Math.min(this.width, this.height) / 2 - this.margin
     const svg = d3.create('svg')
-      .attr('width', `${this.width}`)
-      .attr('height', `${this.height}`)
       .attr("viewBox", `0 0 ${this.width} ${this.height}`);
 
     const g = svg.append('g')

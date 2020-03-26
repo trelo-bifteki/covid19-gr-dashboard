@@ -44,9 +44,11 @@ export default class Home extends Vue {
 
 <template>
   <article class="home-view">
-    <section class="home-view__card">
+    <section class="home-view__primary-card">
       <h2>Σύνολo</h2>
-       {{ totalCases }}
+       <div class="home-view__total">
+         {{ totalCases }}
+       </div>
     </section>
    <PieChart :data="casesGroupedByAge" />
   </article>
@@ -54,7 +56,11 @@ export default class Home extends Vue {
 
 <style lang="sass">
 .home-view
-  &__card
+  &__primary-card
+    background-color: #42b983
     border: 1px solid green
     border-radius: 2px
+  &__total
+    color: white
+    font-size: 3rem
 </style>
