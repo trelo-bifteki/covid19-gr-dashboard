@@ -23,7 +23,7 @@ import {
   },
 })
 export default class Home extends Vue {
-  data?: DailyCoronaData; // eslint-disable-line
+
   isLoading = true;
 
   @Prop({
@@ -53,87 +53,97 @@ export default class Home extends Vue {
   async loadData() {
     try {
       this.isLoading = true;
-      this.data = await import(
+      const data = await import(
         `@/assets/data/covid-19-gr-${this.date}.json`
       );
+      this.$store.commit('setCurrentData', data);
+      console.log(this);
     } finally {
       this.isLoading = false;
     }
   }
 
+  get currentDailyData(): any {
+    return this.$store.state.currentDailyData;
+  }
+
+  get data(): any {
+    return null;
+  }
+
   get totalCases(): number {
-    return this.data?.total || 0;
+    return this.currentDailyData?.total || 0;
   }
 
   get currentDeaths(): number {
-    return this.data?.current_deaths || 0;
+    return this.currentDailyData?.current_deaths || 0;
   }
 
   get newConfirmed(): number {
-    return this.data?.new_confirmed || 0;
+    return this.currentDailyData?.new_confirmed || 0;
   }
 
   get casesGroupedByAge(): PieData[] {
-    if (!this.data) {
+    if (!this.currentDailyData) {
       return [];
     }
 
     return [{
       name: '65+',
-      value: this.data['65_plus'],
+      value: this.currentDailyData['65_plus'],
     }, {
       name: '40-64',
-      value: this.data['40-64'],
+      value: this.currentDailyData['40-64'],
     }, {
       name: '18-39',
-      value: this.data['18-39'],
+      value: this.currentDailyData['18-39'],
     }, {
       name: '0-17',
-      value: this.data['0-17'],
+      value: this.currentDailyData['0-17'],
     }].reverse();
   }
 
   get casesGroupedByGender(): PieData[] {
-    if (!this.data) {
+    if (!this.currentDailyData) {
       return [];
     }
     return [{
       name: 'men',
-      value: this.data['men'],
+      value: this.currentDailyData['men'],
     }, {
       name: 'women',
-      value: +this.data['women'],
+      value: +this.currentDailyData['women'],
     }];
   }
 
   get casesGroupedByHospitilization(): PieData[] {
-    if (!this.data) {
+    if (!this.currentDailyData) {
       return [];
     }
 
     return [{
       name: 'in_IC',
-      value: this.data['in_IC'],
+      value: this.currentDailyData['in_IC'],
     }, {
       name: 'currently_treating',
-      value: this.data['currently_treating']
+      value: this.currentDailyData['currently_treating']
     }, {
       name: 'recovered',
-      value: this.data['recovered'],
+      value: this.currentDailyData['recovered'],
     }];
   }
 
   get topTenTotalCasesGroupedByRegion(): PieData[] {
-    if (!this.data) {
+    if (!this.currentDailyData) {
       return [];
     }
 
     const results: PieData[] = [];
 
-    for (const region in this.data.regions) {
+    for (const region in this.currentDailyData.regions) {
       results.push({
         name: region,
-        value: this.data.regions[region],
+        value: this.currentDailyData.regions[region],
       });
     }
 
