@@ -63,12 +63,8 @@ export default class Home extends Vue {
     }
   }
 
-  get currentDailyData(): any {
+  get currentDailyData(): DailyCoronaData | null {
     return this.$store.state.currentDailyData;
-  }
-
-  get data(): any {
-    return null;
   }
 
   get totalCases(): number {
