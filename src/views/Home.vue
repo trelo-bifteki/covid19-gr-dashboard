@@ -54,10 +54,9 @@ export default class Home extends Vue {
     try {
       this.isLoading = true;
       const data = await import(
-        `@/assets/data/covid-19-gr-${this.date}.json`
+        `@/assets/covid19-gr-json/covid-19-gr-${this.date}.json`
       );
       this.$store.commit('setCurrentData', data);
-      console.log(this);
     } finally {
       this.isLoading = false;
     }

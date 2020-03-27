@@ -5,11 +5,9 @@ A dashboard for displaying current status of covid-19 in Greece
 
 ## Prerequisites
 
-Download all JSON files available in the following repository:
+This project depends always on the following project:
 
 [covid19-gr-json]{https://github.com/kargig/covid19-gr-json/}
-
-Move all JSON files into `src/assets/data` folder
 
 ## Project setup
 ```
