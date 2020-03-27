@@ -11,4 +11,5 @@ export default interface DailyCoronaData {
   in_IC: number;
   currently_treating: number;
   recovered: number;
+  regions: Record<string, number>;
 };

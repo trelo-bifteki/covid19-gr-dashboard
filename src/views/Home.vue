@@ -2,6 +2,8 @@
 import RegionMap from '@/components/RegionMap.vue';
 import LineChart from '@/components/LineChart.vue';
 import PieChart from '@/components/PieChart.vue';
+import BarPlot from '@/components/BarPlot.vue';
+
 import {
   Component, Prop, Vue, Watch
 } from 'vue-property-decorator';
@@ -14,6 +16,7 @@ import {
 @Component({
   name: 'Home',
   components: {
+    BarPlot,
     LineChart,
     PieChart,
     RegionMap,
@@ -120,6 +123,25 @@ export default class Home extends Vue {
       value: this.data['recovered'],
     }];
   }
+
+  get casesGroupedByRegion(): PieData[] {
+    if (!this.data) {
+      return [];
+    }
+
+    const results: PieData[] = [];
+    console.log(this.data.regions);
+    for (const region in this.data.regions) {
+      results.push({
+        name: region,
+        value: this.data.regions[region],
+      });
+    }
+
+    results.sort((one, another) => one.value - another.value);
+
+    return results;
+  }
 }
 </script>
 
@@ -175,7 +197,9 @@ export default class Home extends Vue {
       />
     </div>
     <div class="home-view__overview">
-      <LineChart></LineChart>
+      <BarPlot
+        :data="casesGroupedByRegion"
+      />
     </div>
   </section>
 </template>
@@ -187,7 +211,8 @@ export default class Home extends Vue {
 .home-view
   &__overview
     border: 1px solid #DCDCDC
-    max-width: 15rem
+    margin: $space
+    max-width: 66%
     padding: $space
   &__pie-chart
     border: 1px solid #DCDCDC
