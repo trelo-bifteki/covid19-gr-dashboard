@@ -1,10 +1,12 @@
 {
-  "name": "covid19-gr-dashboard",
+  "name": "@trelobifteki/covid19-gr-dashboard",
   "version": "0.1.0",
   "author": "Lampros Papadimitriou",
   "description": "Dashboard for displaying current status of covid-19 in Greece",
   "keywords": [
     "vuejs",
+    "d3js",
+    "d3",
     "vuejs2",
     "typescript",
     "vuex",
