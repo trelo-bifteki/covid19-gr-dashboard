@@ -56,7 +56,6 @@ export default class Home extends Vue {
       this.data = await import(
         `@/assets/data/covid-19-gr-${this.date}.json`
       );
-      console.log(this.data);
     } finally {
       this.isLoading = false;
     }
@@ -130,7 +129,7 @@ export default class Home extends Vue {
     }
 
     const results: PieData[] = [];
-    console.log(this.data.regions);
+
     for (const region in this.data.regions) {
       results.push({
         name: region,
