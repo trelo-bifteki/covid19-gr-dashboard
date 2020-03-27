@@ -1,7 +1,18 @@
 {
   "name": "covid19-gr-dashboard",
   "version": "0.1.0",
-  "private": true,
+  "author": "Lampros Papadimitriou",
+  "description": "Dashboard for displaying current status of covid-19 in Greece",
+  "keywords": [
+    "vuejs",
+    "vuejs2",
+    "typescript",
+    "vuex",
+    "vue-router",
+    "covid-19",
+    "dashboard"
+  ],
+  "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
