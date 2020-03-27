@@ -124,7 +124,7 @@ export default class Home extends Vue {
     }];
   }
 
-  get casesGroupedByRegion(): PieData[] {
+  get topTenTotalCasesGroupedByRegion(): PieData[] {
     if (!this.data) {
       return [];
     }
@@ -138,9 +138,9 @@ export default class Home extends Vue {
       });
     }
 
-    results.sort((one, another) => one.value - another.value);
+    results.sort((one, another) => another.value - one.value);
 
-    return results;
+    return results.slice(0, 10);
   }
 }
 </script>
@@ -161,7 +161,7 @@ export default class Home extends Vue {
         </div>
       </article>
 
-      <article class="home-view__card">
+      <article class="home-view__card home-view__card--dark">
         <h2 class="home-view__card-title">
           Current deaths
         </h2>
@@ -198,7 +198,7 @@ export default class Home extends Vue {
     </div>
     <div class="home-view__overview">
       <BarPlot
-        :data="casesGroupedByRegion"
+        :data="topTenTotalCasesGroupedByRegion"
       />
     </div>
   </section>
@@ -237,6 +237,9 @@ export default class Home extends Vue {
     flex: 1 1 0px
     margin: $space
     padding: $space
+    &--dark
+      background-color: $color-gray-darkest
+      color: white
   &__card-title
     font-size: 1.5rem
     font-weight: bold
@@ -244,7 +247,7 @@ export default class Home extends Vue {
     color: white
     font-size: 3rem
     &--warn
-      color: $color-rainbow-red
+      color: $color-rainbow-orange
   &__total
     color: white
     font-size: 3rem
