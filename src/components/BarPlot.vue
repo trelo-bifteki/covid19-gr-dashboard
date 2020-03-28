@@ -1,6 +1,6 @@
 <script lang="ts">
 import {
-  Component, Prop, Vue
+  Component, Prop, Vue, Watch,
 } from 'vue-property-decorator';
 import PieData from '@/types/PieData';
 import * as d3 from 'd3';
@@ -40,6 +40,14 @@ export default class BarPlot extends Vue {
   })
   private margin!: RectMargin;
 
+  @Watch('data')
+  private onDataChange() {
+    this.reset();
+    this.update();
+  }
+
+  private gElement!: d3.Selection<SVGGElement, undefined, null, undefined>;
+
   @Prop({
     default: () => [],
     type: Array,
@@ -47,59 +55,76 @@ export default class BarPlot extends Vue {
   private data!: PieData[];
 
   mounted() {
-    const width = this.width - this.margin.left - this.margin.right;
-    const height = this.height - this.margin.bottom - this.margin.top;
     const svg = d3.create('svg')
       .attr('width', '100%')
       .attr('viewBox', `0 0 ${this.width} ${this.height}`);
-    const maxValue = Math.max(...this.data.map(d => d.value));
 
-    const g = svg.append('g')
+    this.gElement = svg.append('g')
       .attr(
         'transform',
         `translate(${this.margin.left}, ${this.margin.top})`
       );
 
-    const xAxis = d3.scaleBand()
-      .domain(this.data.map(d => d.name))
-      .range([0, width])
-      .padding(0.5);
+    // Initialize the plot with the first dataset
+    this.update();
 
-    g.append('g')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xAxis))
+    this.$el.append(svg.node() as Node);
+  }
+
+  get maxValue(): number {
+    return Math.max(...this.data.map(d => d.value))
+  }
+
+  get innerHeight(): number {
+    return this.height - this.margin.bottom - this.margin.top;
+  }
+
+  get innerWidth(): number {
+    return this.width - this.margin.left - this.margin.right;
+  }
+
+  get xAxis(): d3.ScaleBand<string> {
+    return d3.scaleBand()
+      .domain(this.data.map(d => d.name))
+      .range([0, this.innerWidth])
+      .padding(0.5);
+  }
+
+  get yAxis() {
+    return d3.scaleLinear()
+      .domain([0, this.maxValue])
+      .range([this.innerHeight, 0]);
+  }
+
+  reset() {
+    this.gElement.selectAll('g').remove();
+    this.gElement.selectAll('rect').remove();
+  }
+
+  // A function that create / update the plot for a given variable:
+  update(): void {
+    this.gElement.append('g')
+      .attr('transform', `translate(0,${this.innerHeight})`)
+      .call(d3.axisBottom(this.xAxis))
       .selectAll('text')
       .attr('transform', 'translate(-10,0)rotate(-45)')
       .style('text-anchor', 'end');
 
-    const yAxis = d3.scaleLinear()
-      .domain([0, maxValue])
-      .range([height, 0]);
+    this.gElement.append('g')
+      .call(d3.axisLeft(this.yAxis))
 
-
-    g.append('g')
-      .call(d3.axisLeft(yAxis))
-
-    // A function that create / update the plot for a given variable:
-    function update(data: PieData[]) {
-      g.selectAll('rect')
-        .data(data)
-        .enter()
-        .append('rect')
-        .attr('x', d => {
-          const result = xAxis(d.name)
-          return `${result}`;
-        })
-        .attr('y', d => { return yAxis(d.value); })
-        .attr('width', xAxis.bandwidth())
-        .attr('height', (d) => { return height - yAxis(d.value); })
-        .attr('fill', '#69b3a2');
-    }
-
-    // Initialize the plot with the first dataset
-    update(this.data)
-
-    this.$el.append(svg.node() as Node);
+    this.gElement.selectAll('rect')
+      .data(this.data)
+      .enter()
+      .append('rect')
+      .attr('x', d => {
+        const result = this.xAxis(d.name)
+        return `${result}`;
+      })
+      .attr('y', d => this.yAxis(d.value))
+      .attr('width', this.xAxis.bandwidth())
+      .attr('height', d => this.innerHeight - this.yAxis(d.value))
+      .attr('fill', '#69b3a2');
   }
 }
 </script>
