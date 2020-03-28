@@ -19,7 +19,9 @@ export default class App extends Vue{
 <template>
   <div class="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
+      <router-link to="/">
+        Home
+      </router-link> |
       <template v-for="date in availableDates">
         <router-link
           :key="date"
@@ -30,10 +32,12 @@ export default class App extends Vue{
         </router-link> |
       </template>
 
-      <router-link to="/about">About</router-link>
+      <router-link to="/about">
+        About
+      </router-link>
     </div>
     <div class="app__main">
-      <router-view/>
+      <router-view />
     </div>
   </div>
 </template>

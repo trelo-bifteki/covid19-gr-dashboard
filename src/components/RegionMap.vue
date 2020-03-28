@@ -58,14 +58,22 @@ export default class RegionMap extends Vue {
     <h2>Region map</h2>
     path: {{ path }}
     <template>
-      <svg width="500" height="270" viewBox="0 0 500 270">
+      <svg
+        width="500"
+        height="270"
+        viewBox="0 0 500 270"
+      >
         <g>
           <path :d="path" />
-          <circle cx="50%" cy="50%" r="4" fill="black"/>
+          <circle
+            cx="50%"
+            cy="50%"
+            r="4"
+            fill="black"
+          />
         </g>
       </svg>
     </template>
-
   </section>
 </template>
 

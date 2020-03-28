@@ -12,4 +12,4 @@ export default interface DailyCoronaData {
   currently_treating: number;
   recovered: number;
   regions: Record<string, number>;
-};
+}

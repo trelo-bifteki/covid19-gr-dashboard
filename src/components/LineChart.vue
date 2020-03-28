@@ -88,6 +88,5 @@ export default class PieChart extends Vue {
 </script>
 
 <template>
-  <section class="line-chart">
-  </section>
+  <section class="line-chart" />
 </template>

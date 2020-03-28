@@ -123,6 +123,5 @@ export default class PieChart extends Vue {
 }
 </script>
 <template>
-  <section class="pie-chart">
-  </section>
+  <section class="pie-chart" />
 </template>

@@ -184,7 +184,7 @@ export default class Home extends Vue {
     </div>
 
     <div class="home-view__pie-charts">
-       <PieChart
+      <PieChart
         class="home-view__pie-chart"
         :data="casesGroupedByAge"
       />
