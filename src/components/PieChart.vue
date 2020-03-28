@@ -1,6 +1,6 @@
 <script lang="ts">
 import {
-  Component, Prop, Vue
+  Component, Prop, Vue, Watch,
 } from 'vue-property-decorator';
 import PieData from '@/types/PieData';
 import * as d3 from 'd3';
@@ -31,37 +31,59 @@ export default class PieChart extends Vue {
   })
   private margin!: number;
 
-  private radius: number;
+  private gElement!: d3.Selection<SVGGElement, undefined, null, undefined>;
+
+  @Watch('data')
+  private onDataChange() {
+    this.reset();
+    this.update();
+  }
 
   constructor() {
     super();
-    this.radius = 0;
+  }
+
+  get radius(): number {
+    return Math.min(this.width, this.height) / 2 - this.margin;
+  }
+
+  get arcs(): d3.PieArcDatum<number | { valueOf(): number }>[] {
+    const pie = d3.pie()
+      .padAngle(0.5)
+      .sort(null)
+      .value(data => data.valueOf());
+    const result = pie(this.data.map(data => data.value));
+    return result;
   }
 
   mounted() {
-    this.radius = Math.min(this.width, this.height) / 2 - this.margin
     const svg = d3.create('svg')
       .attr('viewBox', `0 0 ${this.width} ${this.height}`);
 
-    const g = svg.append('g')
+    this.gElement = svg.append('g')
       .attr(
         'transform',
         `translate(${this.width / 2}, ${this.height / 2})`
       );
 
+    this.update();
+
+    this.$el.append(svg.node() as Node);
+  }
+
+  reset(): void {
+    this.gElement.selectAll('path').remove();
+    this.gElement.selectAll('text').remove();
+  }
+
+  update(): void {
     const color = d3.scaleOrdinal()
       .domain(this.data.map(data => data.name))
       .range(d3.schemeDark2)
 
-    const pie = d3.pie()
-      .padAngle(0.5)
-      .sort(null)
-      .value(data => data.valueOf());
-    const arcs = pie(this.data.map(data => data.value));
-
     const arc = d3.arc().innerRadius(100).outerRadius(this.radius);
-    g.selectAll('whatever')
-      .data(arcs)
+    this.gElement.selectAll('whatever')
+      .data(this.arcs)
       .enter()
       .append('path')
       .attr('d', d => arc({
@@ -78,8 +100,8 @@ export default class PieChart extends Vue {
       .attr('stroke-width', '2px')
       .attr('opacity', 0.7);
 
-    g.selectAll('whatever')
-      .data(arcs)
+    this.gElement.selectAll('whatever')
+      .data(this.arcs)
       .enter()
       .append('text')
       .text(d => {
@@ -97,8 +119,6 @@ export default class PieChart extends Vue {
       })
       .style('text-anchor', 'middle')
       .style('font-size', '1rem');
-
-    this.$el.append(svg.node() as Node);
   }
 }
 </script>

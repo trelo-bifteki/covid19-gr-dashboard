@@ -185,19 +185,16 @@ export default class Home extends Vue {
 
     <div class="home-view__pie-charts">
        <PieChart
-        v-if="!isLoading"
         class="home-view__pie-chart"
         :data="casesGroupedByAge"
       />
 
       <PieChart
-        v-if="!isLoading"
         class="home-view__pie-chart"
         :data="casesGroupedByGender"
       />
 
       <PieChart
-        v-if="!isLoading"
         class="home-view__pie-chart"
         :data="casesGroupedByHospitilization"
       />
