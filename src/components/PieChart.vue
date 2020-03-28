@@ -52,8 +52,7 @@ export default class PieChart extends Vue {
       .padAngle(0.5)
       .sort(null)
       .value(data => data.valueOf());
-    const result = pie(this.data.map(data => data.value));
-    return result;
+    return pie(this.data.map(data => data?.value || 0));
   }
 
   mounted() {
