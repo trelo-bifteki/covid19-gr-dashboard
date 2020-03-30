@@ -5,6 +5,11 @@ import {
 
 @Component
 export default class App extends Vue{
+
+  created() {
+    this.$store.dispatch('findAll');
+  }
+
   get availableDates(): string[] {
     return [
       '2020-03-21',
