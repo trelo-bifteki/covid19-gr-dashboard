@@ -2,22 +2,21 @@
 import {
   Component, Vue
 } from 'vue-property-decorator';
+import {
+  mapGetters, mapActions
+} from 'vuex';
 
-@Component
+mapGetters
+@Component({
+  computed: {
+    ...mapGetters([
+      'availableDates',
+    ]),
+  },
+})
 export default class App extends Vue{
-
   created() {
     this.$store.dispatch('findAll');
-  }
-
-  get availableDates(): string[] {
-    return [
-      '2020-03-21',
-      '2020-03-22',
-      '2020-03-23',
-      '2020-03-24',
-      '2020-03-25',
-    ];
   }
 }
 </script>
