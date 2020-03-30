@@ -14,7 +14,6 @@ const getters: GetterTree<RootState, any> = {
     for (const file in state.data) {
       results.push(file);
     }
-    console.log(results);
     return results;
   },
 
