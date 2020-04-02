@@ -7,7 +7,7 @@ A dashboard for displaying current status of covid-19 in Greece
 
 This project depends always on the following project:
 
-[covid19-gr-json]{https://github.com/kargig/covid19-gr-json/}
+[covid19-gr-json](https://github.com/kargig/covid19-gr-json/)
 
 ## Project setup
 ```
