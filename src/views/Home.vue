@@ -32,6 +32,9 @@ export default class Home extends Vue {
   })
   private date!: string;
 
+  private centerX = 24;
+  private centerY = 38.5;
+
   @Watch('$route')
   private onRouteChange(current: Route, previous: Route) {
     const currentDate = current.params.date;
@@ -204,6 +207,12 @@ export default class Home extends Vue {
         :data="topTenTotalCasesGroupedByRegion"
       />
     </div>
+    <div class="home-view__overview">
+      <RegionMap
+        :center-x="centerX"
+        :center-y="centerY"
+      />
+    </div>
   </section>
 </template>
 
@@ -221,7 +230,7 @@ export default class Home extends Vue {
     border: 1px solid #DCDCDC
     border-radius: 2px
     flex: 1 1 0px
-    margin: $space
+    margin-right: $space
     padding: $space
   &__pie-charts
     display: flex
@@ -238,8 +247,10 @@ export default class Home extends Vue {
     border: 1px solid green
     border-radius: 2px
     flex: 1 1 0px
-    margin: $space
+    margin-right: $space
     padding: $space
+    &:last-child
+      margin-right: 0
     &--dark
       background-color: $color-gray-darkest
       color: white
