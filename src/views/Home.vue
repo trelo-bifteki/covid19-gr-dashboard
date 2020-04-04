@@ -27,7 +27,7 @@ export default class Home extends Vue {
   isLoading = true;
 
   @Prop({
-    default: '2020-03-24',
+    default: null,
     type: String
   })
   private date!: string;
@@ -57,12 +57,20 @@ export default class Home extends Vue {
     try {
       this.isLoading = true;
       const data = await import(
-        `@/assets/covid19-gr-json/covid-19-gr-${this.date}.json`
+        `@/assets/covid19-gr-json/covid-19-gr-${this.currentDateOrLatestDate}.json`
       );
       this.$store.commit('setCurrentDailyData', data);
     } finally {
       this.isLoading = false;
     }
+  }
+
+  get latestDate(): string {
+    return this.$store.getters.latestDate;
+  }
+
+  get currentDateOrLatestDate(): string {
+    return this.date === null ? this.latestDate : this.date;
   }
 
   get currentDailyData(): DailyCoronaData | null {

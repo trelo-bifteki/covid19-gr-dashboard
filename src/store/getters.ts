@@ -22,6 +22,13 @@ const getters: GetterTree<RootState, any> = {
       const end = file.indexOf(suffix);
       return file.substring(prefix.length, end);
     });
+  },
+
+  latestDate(state: RootState, getters): string | null {
+    const total = getters.availableDates.length;
+    return total > 0
+      ? getters.availableDates[total -1]
+      : null;
   }
 };
 

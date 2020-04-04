@@ -3,7 +3,7 @@ import {
   Component, Vue
 } from 'vue-property-decorator';
 import {
-  mapGetters, mapActions
+  mapGetters
 } from 'vuex';
 
 mapGetters
