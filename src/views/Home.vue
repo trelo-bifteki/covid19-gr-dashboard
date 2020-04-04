@@ -186,21 +186,30 @@ export default class Home extends Vue {
       </article>
     </div>
 
-    <div class="home-view__pie-charts">
-      <PieChart
-        class="home-view__pie-chart"
-        :data="casesGroupedByAge"
-      />
+    <div class="home-view__primary-row">
+      <div class="home-view__overview">
+        <RegionMap
+          :center-x="centerX"
+          :center-y="centerY"
+        />
+      </div>
 
-      <PieChart
-        class="home-view__pie-chart"
-        :data="casesGroupedByGender"
-      />
+      <div class="home-view__sidebar">
+        <PieChart
+          class="home-view__pie-chart"
+          :data="casesGroupedByAge"
+        />
 
-      <PieChart
-        class="home-view__pie-chart"
-        :data="casesGroupedByHospitilization"
-      />
+        <PieChart
+          class="home-view__pie-chart"
+          :data="casesGroupedByGender"
+        />
+
+        <PieChart
+          class="home-view__pie-chart"
+          :data="casesGroupedByHospitilization"
+        />
+      </div>
     </div>
     <div class="home-view__overview">
       <BarPlot
@@ -222,16 +231,19 @@ export default class Home extends Vue {
 
 .home-view
   &__overview
-    border: 1px solid #DCDCDC
-    margin: $space
-    max-width: 66%
-    padding: $space
+    flex: 2 1 0
+    margin-bottom: $space
+    @include larger-than-breakpoint-small
+      padding-right: 2 * $space
+      margin-bottom: 0
   &__pie-chart
     border: 1px solid #DCDCDC
     border-radius: 2px
     flex: 1 1 0px
-    margin-right: $space
+    margin-bottom: $space
     padding: $space
+    &:last-child
+      margin-right: 0
   &__pie-charts
     display: flex
     flex-direction: column
@@ -240,6 +252,7 @@ export default class Home extends Vue {
   &__primary-row
     display: flex
     flex-direction: column
+    margin-bottom: $space
     @include larger-than-breakpoint-small
       flex-direction: row
   &__card
@@ -247,10 +260,16 @@ export default class Home extends Vue {
     border: 1px solid green
     border-radius: 2px
     flex: 1 1 0px
-    margin-right: $space
+    margin-bottom: $space
     padding: $space
+    @include larger-than-breakpoint-small
+      flex-direction: row
+      margin-bottom: 0
+      margin-right: $space
     &:last-child
-      margin-right: 0
+      margin-bottom: 0
+      @include larger-than-breakpoint-small
+        margin-right: 0
     &--dark
       background-color: $color-gray-darkest
       color: white
@@ -265,4 +284,8 @@ export default class Home extends Vue {
   &__total
     color: white
     font-size: 3rem
+  &__sidebar
+    display: flex
+    flex: 1 1 0
+    flex-direction: column
 </style>
