@@ -6,6 +6,9 @@ import * as d3 from 'd3';
 import {
   GeoProjection, GeoPath
 } from 'd3';
+import {
+  Marker
+} from '@/store/types';
 
 import greece10mgeojson from '@/assets/greece-10m.geo.json';
 
@@ -35,6 +38,12 @@ export default class RegionMap extends Vue {
   })
   private centerY!: number;
 
+  @Prop({
+    default: () => [],
+    type: Array,
+  })
+  markers!: Marker[];
+
   private data: [number, number][];
   line: string | null;
   private gElement!: d3.Selection<SVGGElement, undefined, null, undefined>;
@@ -42,13 +51,16 @@ export default class RegionMap extends Vue {
   @Watch('centerX')
   onCenterXChange(): void {
     this.draw();
-    console.log('x');
   }
 
   @Watch('centerY')
   onCenterYChange(): void {
     this.draw();
-    console.log('y');
+  }
+
+  @Watch('markers')
+  onMarkersChange(): void {
+    this.draw();
   }
 
   constructor() {
@@ -57,15 +69,8 @@ export default class RegionMap extends Vue {
     this.line = null;
   }
 
-  mounted() {
-    const svg = d3.create('svg')
-      .attr('viewBox', `0 0 ${this.width} ${this.height}`);
-
-    this.gElement = svg.append('g');
-
-    this.draw();
-
-    this.$el.append(svg.node() as Node);
+  get viewbox(): string {
+    return `0 0 ${this.width} ${this.height}`;
   }
 
   get greeceGeoJson(): any {
@@ -76,9 +81,18 @@ export default class RegionMap extends Vue {
     return d3.geoPath().projection(this.projection);
   }
 
+  get superpath(): string {
+    const path = d3.geoPath().projection(this.projection);
+    console.log(this.greeceGeoJson[0])
+    const result = path(this.greeceGeoJson[0]);
+    console.log(result);
+    return `${result}`;
+  }
+
   private draw(): void {
-    console.log('draw');
     this.gElement.selectAll('path').remove();
+    this.gElement.selectAll('circle').remove();
+
     this.gElement.selectAll('path')
       .data(this.greeceGeoJson)
       .enter()
@@ -87,6 +101,55 @@ export default class RegionMap extends Vue {
       .attr('d', this.geoPath)
       .style('stroke', 'black')
       .style('opacity', .3);
+
+    // Add circles:
+    this.gElement
+      .selectAll('circles')
+      .data(this.markers)
+      .enter()
+      .append('circle')
+      .attr('cx', d => {
+        console.log(d);
+        const projection = this.projection([d.long, d.lat])
+        return projection ? projection[0] : null
+      })
+      .attr('cy', d => {
+        const projection = this.projection([d.long, d.lat])
+        return projection ? projection[1] : null
+      })
+      .attr('r', 14)
+      .style('fill', '#69b3a2')
+      .attr('stroke', '#69b3a2')
+      .attr('stroke-width', 3)
+      .attr('fill-opacity', .4)
+  }
+
+  private calculateCX(marker: Marker): number | null{
+    const projection = this.projection([
+      marker.long,
+      marker.lat
+    ]);
+
+    return projection ? projection[0] : null;
+  }
+
+  private calculateCY(marker: Marker): number | null{
+    const projection = this.projection([
+      marker.long,
+      marker.lat
+    ]);
+
+    return projection ? projection[1] : null;
+  }
+
+  get circleItems(): any[] {
+    let counter = 0;
+    console.log(this.markers);
+    return this.markers.map(marker => ({
+      id: counter++,
+      cx: this.calculateCX(marker),
+      cy: this.calculateCY(marker),
+    }));
   }
 
   get projection(): GeoProjection {
@@ -121,15 +184,35 @@ export default class RegionMap extends Vue {
   }
 }
 </script>
+
 <template>
-  <section class="region-map" />
+  <svg
+    class="region-map"
+    width="100%"
+    :viewbox="viewbox"
+  >
+    <g>
+      <path
+        :d="superpath"
+        fill="grey"
+        stroke="black"
+        opacity="0.3"
+      />
+    </g>
+    <circle
+      v-for="item in circleItems"
+      :key="item.name"
+      :cx="item.cx"
+      :cy="item.cy"
+      r="14"
+      stroke="black"
+      stroke-width="3"
+      fill="#69b3a2"
+      fill-opacity="0.4"
+    />
+
+  </svg>
 </template>
 
-<style lang="sass" scoped>
-svg
-  margin: 25px
-path
-  fill: none
-  stroke: #76BF8A
-  stroke-width: 3px
+<style lang="sass">
 </style>

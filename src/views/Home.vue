@@ -3,6 +3,9 @@ import RegionMap from '@/components/RegionMap.vue';
 import LineChart from '@/components/LineChart.vue';
 import PieChart from '@/components/PieChart.vue';
 import BarPlot from '@/components/BarPlot.vue';
+import {
+  Marker
+} from '@/store/types';
 
 import {
   Component, Prop, Vue, Watch
@@ -67,6 +70,10 @@ export default class Home extends Vue {
 
   get latestDate(): string {
     return this.$store.getters.latestDate;
+  }
+
+  get markers(): Marker[] {
+    return this.$store.state.markers;
   }
 
   get currentDateOrLatestDate(): string {
@@ -199,6 +206,7 @@ export default class Home extends Vue {
         <RegionMap
           :center-x="centerX"
           :center-y="centerY"
+          :markers="markers"
         />
       </div>
 
@@ -222,12 +230,6 @@ export default class Home extends Vue {
     <div class="home-view__overview">
       <BarPlot
         :data="topTenTotalCasesGroupedByRegion"
-      />
-    </div>
-    <div class="home-view__overview">
-      <RegionMap
-        :center-x="centerX"
-        :center-y="centerY"
       />
     </div>
   </section>
