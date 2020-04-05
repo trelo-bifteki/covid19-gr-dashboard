@@ -28,8 +28,9 @@ const state: RootState = {
     long: 23.727539,
     lat: 37.983810,
   }, {
-    long: 9.083,
-    lat: 42.149
+    name: 'Thessaloniki',
+    long: 22.920227,
+    lat: 40.736851,
   }, // corsica
   {
     long: 7.26,
