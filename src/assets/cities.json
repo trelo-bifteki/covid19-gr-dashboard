@@ -1,0 +1,29 @@
+[{
+  "name": "Athens",
+  "long": 23.727539,
+  "lat": 37.983810
+}, {
+  "name": "Thessaloniki",
+  "long": 22.920227,
+  "lat": 40.736851
+},
+{
+  "name": "Patra",
+  "long": 21.73444,
+  "lat": 38.24444
+},
+{
+  "name": "Piraeus",
+  "long": 23.63708,
+  "lat": 37.94745
+},
+{
+  "name": "Larissa",
+  "long": 22.41761,
+  "lat": 39.63689
+}, {
+  "name": "Kozani",
+  "long": 21.78896,
+  "lat": 40.30069
+}
+]

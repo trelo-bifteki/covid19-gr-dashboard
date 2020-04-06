@@ -4,6 +4,9 @@ import {
 } from 'vue-property-decorator';
 import PieData from '@/types/PieData';
 import * as d3 from 'd3';
+import {
+  ScaleOrdinal
+} from 'd3';
 
 @Component
 export default class PieChart extends Vue {
@@ -31,18 +34,6 @@ export default class PieChart extends Vue {
   })
   private margin!: number;
 
-  private gElement!: d3.Selection<SVGGElement, undefined, null, undefined>;
-
-  @Watch('data')
-  private onDataChange() {
-    this.reset();
-    this.update();
-  }
-
-  constructor() {
-    super();
-  }
-
   get radius(): number {
     return Math.min(this.width, this.height) / 2 - this.margin;
   }
@@ -55,72 +46,96 @@ export default class PieChart extends Vue {
     return pie(this.data.map(data => data?.value || 0));
   }
 
-  mounted() {
-    const svg = d3.create('svg')
-      .attr('viewBox', `0 0 ${this.width} ${this.height}`);
-
-    this.gElement = svg.append('g')
-      .attr(
-        'transform',
-        `translate(${this.width / 2}, ${this.height / 2})`
-      );
-
-    this.update();
-
-    this.$el.append(svg.node() as Node);
+  get viewBox(): string {
+    return `0 0 ${this.width} ${this.height}`;
   }
 
-  reset(): void {
-    this.gElement.selectAll('path').remove();
-    this.gElement.selectAll('text').remove();
+  get transform(): string {
+    return `translate(${this.width / 2}, ${this.height / 2})`;
   }
 
-  update(): void {
-    const color = d3.scaleOrdinal()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get arc(): d3.Arc<any, d3.DefaultArcObject> {
+    return d3.arc().innerRadius(100).outerRadius(this.radius);
+  }
+
+  get color(): ScaleOrdinal<string, unknown> {
+    return d3.scaleOrdinal()
       .domain(this.data.map(data => data.name))
-      .range(d3.schemeDark2)
+      .range(d3.schemeDark2);
+  }
 
-    const arc = d3.arc().innerRadius(100).outerRadius(this.radius);
-    this.gElement.selectAll('whatever')
-      .data(this.arcs)
-      .enter()
-      .append('path')
-      .attr('d', d => arc({
-        innerRadius: this.margin,
-        outerRadius: this.radius,
-        startAngle: d.startAngle,
-        endAngle: d.endAngle,
-      }))
-      .attr('fill', d => {
-        const result =  color(`${d.value}`);
-        return `${result}`;
-      })
-      .attr('stroke', 'white')
-      .attr('stroke-width', '2px')
-      .attr('opacity', 0.7);
+  private calculatePath(source: d3.PieArcDatum<number | { valueOf(): number }>): string | null {
+    return this.arc({
+      innerRadius: this.margin,
+      outerRadius: this.radius,
+      startAngle: source.startAngle,
+      endAngle: source.endAngle,
+    });
+  }
 
-    this.gElement.selectAll('whatever')
-      .data(this.arcs)
-      .enter()
-      .append('text')
-      .text(d => {
-        const name = this.data[d.index].name;
-        return `${name}: ${d.value}`
-      })
-      .attr('transform', d => {
-        const result = arc.centroid({
-          innerRadius: this.margin,
-          outerRadius: this.radius,
-          startAngle: d.startAngle,
-          endAngle: d.endAngle,
-        });
-        return `translate(${result})`;
-      })
-      .style('text-anchor', 'middle')
-      .style('font-size', '1rem');
+  private calculateTranslate(source: d3.PieArcDatum<number | { valueOf(): number }>): string | null {
+    const value = this.arc.centroid({
+      innerRadius: this.margin,
+      outerRadius: this.radius,
+      startAngle: source.startAngle,
+      endAngle: source.endAngle,
+    });
+
+    return `translate(${value})`
+  }
+
+  private calculateLabel(index: number, value: number): string {
+    console.log(this.data);
+    const name = 'test';
+    return `${name}: ${value}`;
+  }
+
+  get pathItems(): { d: string | null }[] {
+    let counter = 0;
+    return this.arcs.map(arc => ({
+      id: counter++,
+      d: this.calculatePath(arc),
+      fill: '' + this.color(`${arc.value}`),
+      label: this.calculateLabel(counter, arc.value),
+      transform: this.calculateTranslate(arc),
+    }));
   }
 }
 </script>
 <template>
-  <section class="pie-chart" />
+  <svg
+    :viewBox="viewBox"
+    aria-labelledby="pie-chart"
+  >
+    <g :transform="transform">
+      <g
+        v-for="item in pathItems"
+        :key="item.id"
+      >
+        <path
+          class="pie-chart__piece"
+          :d="item.d"
+          :fill="item.fill"
+        />
+        <text
+          class="pie-chart__text"
+          :transform="item.transform"
+        >
+          {{ item.label }}
+        </text>
+      </g>
+    </g>
+  </svg>
 </template>
+
+<style lang="sass">
+.pie-chart
+  &__piece
+    stroke: white
+    stroke-width: 2
+    opacity: .7
+  &__text
+    font-size: 1rem
+    text-anchor: middle
+</style>
