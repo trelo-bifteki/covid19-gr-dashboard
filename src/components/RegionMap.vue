@@ -62,35 +62,22 @@ export default class RegionMap extends Vue {
     const countryData = greece10mgeojson[0];
     const path = d3.geoPath().projection(this.projection);
     const result = path(countryData as any);
-    console.log(result);
     return `${result}`;
-  }
-
-  private calculateCX(marker: Marker): number | null{
-    const projection = this.projection([
-      marker.long,
-      marker.lat
-    ]);
-
-    return projection ? projection[0] : null;
-  }
-
-  private calculateCY(marker: Marker): number | null{
-    const projection = this.projection([
-      marker.long,
-      marker.lat
-    ]);
-
-    return projection ? projection[1] : null;
   }
 
   get circleItems(): any[] {
     let counter = 0;
-    return this.markers.map(marker => ({
-      id: counter++,
-      cx: this.calculateCX(marker),
-      cy: this.calculateCY(marker),
-    }));
+    return this.markers.map(marker => {
+      const projection = this.projection([
+        marker.long,
+        marker.lat
+      ]) ||  [0, 0];
+      return {
+        id: counter++,
+        cx: projection[0],
+        cy: projection[1],
+      };
+    });
   }
 }
 </script>
