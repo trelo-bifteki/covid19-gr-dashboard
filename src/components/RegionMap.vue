@@ -1,10 +1,10 @@
 <script lang="ts">
 import {
-  Component, Prop, Watch, Vue
+  Component, Prop, Vue
 } from 'vue-property-decorator';
 import * as d3 from 'd3';
 import {
-  GeoProjection, GeoPath
+  GeoProjection
 } from 'd3';
 import {
   Marker
@@ -100,7 +100,7 @@ export default class RegionMap extends Vue {
     class="region-map"
     width="100%"
     preserveAspectRatio="xMinYMin meet"
-    :viewbox="viewbox"
+    :viewBox="viewbox"
   >
     <g>
       <path
@@ -113,13 +113,10 @@ export default class RegionMap extends Vue {
     <circle
       v-for="item in circleItems"
       :key="item.name"
+      class="region-map__circle"
       :cx="item.cx"
       :cy="item.cy"
-      r="14"
-      stroke="black"
-      stroke-width="3"
-      fill="#69b3a2"
-      fill-opacity="0.4"
+      r="6"
     />
 
   </svg>
@@ -127,6 +124,9 @@ export default class RegionMap extends Vue {
 
 <style lang="sass">
 .region-map
-  border: 1px solid red
-  min-height: 450px
+  &__circle
+    fill: #69b3a2
+    fill-opacity: .4
+    stroke: black
+    stroke-width: 1
 </style>

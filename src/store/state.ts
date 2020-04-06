@@ -31,11 +31,12 @@ const state: RootState = {
     name: 'Thessaloniki',
     long: 22.920227,
     lat: 40.736851,
-  }, // corsica
+  },
   {
-    long: 7.26,
-    lat: 43.71
-  }, // nice
+    name: 'Piraeus',
+    long: 23.63708,
+    lat: 37.94745,
+  },
   {
     long: 2.349,
     lat: 48.864
