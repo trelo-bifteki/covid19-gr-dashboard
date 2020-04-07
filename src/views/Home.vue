@@ -208,6 +208,10 @@ export default class Home extends Vue {
           :center-y="centerY"
           :markers="markers"
         />
+
+        <BarPlot
+          :data="topTenTotalCasesGroupedByRegion"
+        />
       </div>
 
       <div class="home-view__sidebar">
@@ -228,9 +232,7 @@ export default class Home extends Vue {
       </div>
     </div>
     <div class="home-view__overview">
-      <BarPlot
-        :data="topTenTotalCasesGroupedByRegion"
-      />
+
     </div>
   </section>
 </template>

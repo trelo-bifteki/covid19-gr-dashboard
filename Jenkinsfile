@@ -13,18 +13,6 @@ pipeline {
   }
 
   stages {
-    stage('sync data') {
-      steps {
-        sh '''
-        git subtree pull \
-          --prefix src/assets/covid19-gr-json \
-          https://github.com/kargig/covid19-gr-json \
-          master \
-          --squash
-        '''
-      }
-    }
-
     stage('Check for vulnerabilities') {
       steps {
         sh 'npm audit --parseable --production'

@@ -85,10 +85,12 @@ export default class PieChart extends Vue {
     return `translate(${value})`
   }
 
-  private calculateLabel(index: number, value: number): string {
-    console.log(this.data);
-    const name = 'test';
-    return `${name}: ${value}`;
+  private calculateLabel(source: d3.PieArcDatum<number|{ valueOf(): number }>): string {
+    const item = this.data[source.index];
+    if (!item) {
+      return '';
+    }
+    return `${item.name}: ${source.value}`;
   }
 
   get pathItems(): { d: string | null }[] {
@@ -97,7 +99,7 @@ export default class PieChart extends Vue {
       id: counter++,
       d: this.calculatePath(arc),
       fill: '' + this.color(`${arc.value}`),
-      label: this.calculateLabel(counter, arc.value),
+      label: this.calculateLabel(arc),
       transform: this.calculateTranslate(arc),
     }));
   }
