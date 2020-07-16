@@ -1,6 +1,6 @@
 <script lang="ts">
 import {
-  Component, Prop, Vue, Watch,
+  Component, Prop, Vue,
 } from 'vue-property-decorator';
 import PieData from '@/types/PieData';
 import * as d3 from 'd3';

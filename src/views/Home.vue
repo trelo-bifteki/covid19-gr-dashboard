@@ -3,6 +3,8 @@ import RegionMap from '@/components/RegionMap.vue';
 import LineChart from '@/components/LineChart.vue';
 import PieChart from '@/components/PieChart.vue';
 import BarPlot from '@/components/BarPlot.vue';
+import TimelineChart from '@/components/TimelineChart.vue';
+
 import {
   Marker
 } from '@/store/types';
@@ -23,6 +25,7 @@ import {
     LineChart,
     PieChart,
     RegionMap,
+    TimelineChart,
   },
 })
 export default class Home extends Vue {
@@ -209,6 +212,10 @@ export default class Home extends Vue {
           :markers="markers"
         />
 
+        <TimelineChart
+          :data="topTenTotalCasesGroupedByRegion"
+        />
+
         <BarPlot
           :data="topTenTotalCasesGroupedByRegion"
         />
@@ -230,9 +237,6 @@ export default class Home extends Vue {
           :data="casesGroupedByHospitilization"
         />
       </div>
-    </div>
-    <div class="home-view__overview">
-
     </div>
   </section>
 </template>

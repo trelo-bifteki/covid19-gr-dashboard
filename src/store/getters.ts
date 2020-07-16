@@ -21,7 +21,7 @@ const getters: GetterTree<RootState, any> = {
     return getters.files.map((file: string) => {
       const end = file.indexOf(suffix);
       return file.substring(prefix.length, end);
-    });
+    }).filter((date: string) => date.startsWith('2020'));
   },
 
   latestDate(state: RootState, getters): string | null {
